@@ -18,6 +18,14 @@ export type Vehicle = {
   images: string[];
   featured?: boolean;
   downPayment?: number;
+  description?: string;
+  features?: string[];
+  engine?: string;
+  transmission?: string;
+  drivetrain?: string;
+  fuelType?: string;
+  mpgCity?: number;
+  mpgHighway?: number;
 };
 
 export const vehicles: Vehicle[] = [
@@ -30,8 +38,8 @@ export const vehicles: Vehicle[] = [
   {
     id: 'v2', slug: '2020-honda-cr-v-ex', year: 2020, make: 'Honda', model: 'CR-V', trim: 'EX', price: 26995,
     mileage: 53670, body: 'SUV', status: 'Available', stock: 'SM-2409', vin: '2HKRW2H55LH000802', color: 'Platinum White',
-    image: 'https://images.unsplash.com/photo-1568844293986-8c52b62e3d4d?auto=format&fit=crop&w=1200&q=85',
-    images: ['https://images.unsplash.com/photo-1568844293986-8c52b62e3d4d?auto=format&fit=crop&w=1200&q=85'], featured: true, downPayment: 3995,
+    image: 'https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1200&q=85',
+    images: ['https://images.unsplash.com/photo-1542362567-b07e54358753?auto=format&fit=crop&w=1200&q=85'], featured: true, downPayment: 3995,
   },
   {
     id: 'v3', slug: '2019-ford-f-150-xlt', year: 2019, make: 'Ford', model: 'F-150', trim: 'XLT', price: 32995,

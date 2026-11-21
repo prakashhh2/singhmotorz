@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Filter, Search, SlidersHorizontal, X } from 'lucide-react';
 import { Vehicle } from '@/lib/data';
-import { readVehicles } from '@/lib/demo-store';
+import { fetchPublicVehicles } from '@/lib/client-vehicles';
 import VehicleCard from './VehicleCard';
 
 export default function InventoryBrowser({ initialVehicles }: { initialVehicles: Vehicle[] }) {
@@ -13,7 +13,7 @@ export default function InventoryBrowser({ initialVehicles }: { initialVehicles:
   const [body, setBody] = useState('All body styles');
   const [budget, setBudget] = useState('Any budget');
   const [sort, setSort] = useState('Newest first');
-  useEffect(() => { const update = () => setAll(readVehicles()); window.addEventListener('singh-vehicles-updated', update); return () => window.removeEventListener('singh-vehicles-updated', update); }, []);
+  useEffect(() => { const update = () => fetchPublicVehicles().then(setAll); update(); window.addEventListener('singh-vehicles-updated', update); return () => window.removeEventListener('singh-vehicles-updated', update); }, []);
   const makes = ['All makes', ...Array.from(new Set(all.map((v) => v.make)))];
   const results = useMemo(() => all.filter((v) => v.status !== 'Sold' && v.status !== 'Draft').filter((v) => `${v.make} ${v.model}`.toLowerCase().includes(query.toLowerCase())).filter((v) => make === 'All makes' || v.make === make).filter((v) => body === 'All body styles' || v.body === body).filter((v) => budget === 'Any budget' || v.price <= Number(budget)).sort((a, b) => sort === 'Lowest price' ? a.price - b.price : sort === 'Highest price' ? b.price - a.price : b.year - a.year), [all, query, make, body, budget, sort]);
   const clear = () => { setQuery(''); setMake('All makes'); setBody('All body styles'); setBudget('Any budget'); };

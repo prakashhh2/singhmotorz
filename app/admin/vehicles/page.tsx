@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import Image from 'next/image';
-import { Plus, Search } from 'lucide-react';
-import { Vehicle, money, miles, vehicles as seed } from '@/lib/data';
-import { readVehicles, saveVehicles } from '@/lib/demo-store';
+import { useState } from 'react';
+import { Vehicle, vehicles as seed } from '@/lib/data';
+import AdminVehicleManager from '@/components/AdminVehicleManager';
 
-export default function AdminVehiclesPage() { const [list,setList] = useState<Vehicle[]>(seed); const [query,setQuery] = useState(''); useEffect(()=>setList(readVehicles()),[]); const update=(id:string, patch:Partial<Vehicle>)=>{const next=list.map(v=>v.id===id?{...v,...patch}:v);setList(next);saveVehicles(next)}; const filtered=list.filter(v=>`${v.stock} ${v.vin} ${v.make} ${v.model}`.toLowerCase().includes(query.toLowerCase())); return <><header className="admin-top"><span className="eyebrow" style={{margin:0}}>Staff dashboard / Inventory</span><span style={{fontSize:12,color:'var(--muted)'}}>Signed in as admin@singhmotorz.com</span></header><main className="admin-content"><div className="admin-heading"><div><h1>Vehicles</h1><p>Manage your current lot and publish updates without editing code.</p></div><button className="button button-green"><Plus size={17}/> Add vehicle</button></div><div className="admin-stats"><div className="stat-card"><small>Active listings</small><strong>{list.filter(v=>v.status==='Available').length}</strong></div><div className="stat-card"><small>Pending</small><strong>{list.filter(v=>v.status==='Pending').length}</strong></div><div className="stat-card"><small>Sold this month</small><strong>8</strong></div></div><div className="filter-bar" style={{marginBottom:18}}><div className="search-field"><Search size={17}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search stock, VIN, make, or model" /></div></div><div className="admin-table"><table><thead><tr><th>Vehicle</th><th>Price</th><th>Status</th><th>Mileage</th><th>Quick actions</th></tr></thead><tbody>{filtered.map(v=><tr key={v.id}><td><div className="admin-vehicle"><Image width={58} height={42} src={v.image} alt=""/><div><strong>{v.year} {v.make} {v.model} {v.trim}</strong><small>{v.stock} · {v.vin}</small></div></div></td><td><strong>{money(v.price)}</strong></td><td><select className={`admin-status ${v.status.toLowerCase()}`} value={v.status} onChange={e=>update(v.id,{status:e.target.value as Vehicle['status']})}><option>Available</option><option>Pending</option><option>Sold</option><option>Draft</option></select></td><td>{miles(v.mileage)}</td><td><button className="admin-action" onClick={()=>update(v.id,{price:v.price-500})}>− $500</button></td></tr>)}</tbody></table></div></main></> }
+export default function AdminVehiclesPage() {
+  const [list] = useState<Vehicle[]>(seed);
+  return <><header className="admin-top"><span className="eyebrow" style={{margin:0}}>Staff dashboard / Inventory</span><span style={{fontSize:12,color:'var(--muted)'}}>Manage inventory</span></header><main className="admin-content"><AdminVehicleManager initialVehicles={list} /></main></>;
+}
